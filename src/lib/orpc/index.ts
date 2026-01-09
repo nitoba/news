@@ -1,7 +1,9 @@
 import { randomUUID } from 'node:crypto'
 import { ORPCError, os } from '@orpc/server'
+import { getRequestHeaders } from '@tanstack/react-start/server'
 import { logger } from '@/lib/logger'
 import { timingStore } from '@/lib/timing-store'
+import { auth } from '../auth/server'
 import type { Context } from './context'
 
 export const base = os
@@ -82,3 +84,33 @@ export const base = os
 	})
 
 export const publicProcedure = () => base
+
+export const authMiddleware = os
+	.$context<Context>()
+	.middleware(async ({ context, next }) => {
+		const start = performance.now()
+		const sessionData = await auth.api.getSession({
+			headers: getRequestHeaders(),
+		})
+
+		if (!sessionData?.session || !sessionData?.user) {
+			throw new ORPCError('UNAUTHORIZED')
+		}
+
+		const duration = performance.now() - start
+
+		context.resHeaders?.append(
+			'Server-Timing',
+			`auth;dur=${duration.toFixed(2)}`,
+		)
+
+		// Adds session and user to the context
+		return next({
+			context: {
+				session: sessionData.session,
+				user: sessionData.user,
+			},
+		})
+	})
+
+export const protectedProcedure = () => base.use(authMiddleware)
