@@ -5,17 +5,17 @@ import { createRouterClient } from '@orpc/server'
 import { createTanstackQueryUtils } from '@orpc/tanstack-query'
 import { createIsomorphicFn } from '@tanstack/react-start'
 import { getRequestHeaders } from '@tanstack/react-start/server'
-import router from './router'
+import { type Router, router } from './router'
 
 const getORPCClient = createIsomorphicFn()
 	.server(() =>
 		createRouterClient(router, {
-			context: () => ({
+			context: {
 				headers: getRequestHeaders(),
-			}),
+			},
 		}),
 	)
-	.client((): RouterClient<typeof router> => {
+	.client((): RouterClient<Router> => {
 		const link = new RPCLink({
 			url: `${window.location.origin}/api/rpc`,
 			fetch(url, options) {
@@ -28,6 +28,6 @@ const getORPCClient = createIsomorphicFn()
 		return createORPCClient(link)
 	})
 
-export const client: RouterClient<typeof router> = getORPCClient()
+export const client: RouterClient<Router> = getORPCClient()
 
 export const orpc = createTanstackQueryUtils(client)

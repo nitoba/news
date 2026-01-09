@@ -5,8 +5,6 @@ const isProd = process.env.NODE_ENV
 	? process.env.NODE_ENV === 'production'
 	: import.meta.env?.PROD
 
-console.log(import.meta.env)
-
 export const env = createEnv({
 	server: {
 		SERVER_URL: z.url().optional(),

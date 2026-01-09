@@ -10,13 +10,11 @@ export const base = os
 	.$context<Context>()
 	// Logger
 	.use(async ({ next, context, procedure, path }) => {
-		context
 		const start = performance.now()
 		const meta = {
 			path: path.join('.'),
 			type: procedure['~orpc'].route.method,
 			requestId: randomUUID(),
-			// userId: context.session?.user?.id,
 		}
 
 		const loggerForMiddleWare = logger.child({ ...meta, scope: 'procedure' })
@@ -83,8 +81,6 @@ export const base = os
 		})
 	})
 
-export const publicProcedure = () => base
-
 export const authMiddleware = os
 	.$context<Context>()
 	.middleware(async ({ context, next }) => {
@@ -104,13 +100,21 @@ export const authMiddleware = os
 			`auth;dur=${duration.toFixed(2)}`,
 		)
 
+		// Cria um logger filho com o userId
+		// biome-ignore lint/style/noNonNullAssertion: logger is always
+		const loggerWithUserId = context?.logger!.child({
+			userId: sessionData.user.id,
+		})
+
 		// Adds session and user to the context
 		return next({
 			context: {
 				session: sessionData.session,
 				user: sessionData.user,
+				logger: loggerWithUserId,
 			},
 		})
 	})
 
+export const publicProcedure = () => base
 export const protectedProcedure = () => base.use(authMiddleware)

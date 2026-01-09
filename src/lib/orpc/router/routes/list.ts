@@ -1,4 +1,4 @@
-import { publicProcedure } from '..'
+import { publicProcedure } from '../..'
 
 export const list = publicProcedure().handler(async () => {
 	return new Promise<string[]>((res) => {

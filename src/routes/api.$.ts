@@ -1,4 +1,4 @@
-import router from '@/lib/orpc/router'
+import { router } from '@/lib/orpc/router'
 import '@/polyfill'
 
 import { SmartCoercionPlugin } from '@orpc/json-schema'
