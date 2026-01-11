@@ -24,10 +24,10 @@ export const adoptionRequests = pgTable('adoption_requests', {
 		.$defaultFn(() => randomUUID()),
 	userId: text('user_id')
 		.notNull()
-		.references(() => user.id),
+		.references(() => user.id, { onDelete: 'cascade' }),
 	animalId: text('animal_id')
 		.notNull()
-		.references(() => animals.id),
+		.references(() => animals.id, { onDelete: 'cascade' }),
 	status: adoptionStatusEnum('status').default('pending').notNull(),
 	message: text('message'), // mensagem do adotante
 	hasExperience: boolean('has_experience').default(false),

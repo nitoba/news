@@ -22,8 +22,10 @@ export const animals = pgTable('animals', {
 		.primaryKey()
 		.$defaultFn(() => randomUUID()),
 	// Relacionamento polimórfico: pode ser de um abrigo OU de um usuário
-	shelterId: text('shelter_id').references(() => shelters.id),
-	userId: text('user_id').references(() => user.id),
+	shelterId: text('shelter_id').references(() => shelters.id, {
+		onDelete: 'cascade',
+	}),
+	userId: text('user_id').references(() => user.id, { onDelete: 'cascade' }),
 	name: varchar('name', { length: 255 }).notNull(),
 	type: animalTypeEnum('type').notNull(),
 	breed: varchar('breed', { length: 100 }),

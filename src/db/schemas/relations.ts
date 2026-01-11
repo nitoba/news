@@ -2,6 +2,7 @@ import { relations } from 'drizzle-orm'
 import { adoptionRequests } from './adoption-requests'
 import { animals } from './animals'
 import { account, session, user } from './auth'
+import { shelterManagers } from './shelter-managers'
 import { shelters } from './shelters'
 
 export const userRelations = relations(user, ({ many }) => ({
@@ -10,6 +11,7 @@ export const userRelations = relations(user, ({ many }) => ({
 	// App With User Relations
 	adoptionRequests: many(adoptionRequests),
 	animalsForAdoption: many(animals), // animais que o usuário está doando
+	managedShelters: many(shelterManagers), // abrigos que o usuário gerencia
 }))
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -28,8 +30,23 @@ export const accountRelations = relations(account, ({ one }) => ({
 
 // App Relations
 
+export const shelterManagersRelations = relations(
+	shelterManagers,
+	({ one }) => ({
+		shelter: one(shelters, {
+			fields: [shelterManagers.shelterId],
+			references: [shelters.id],
+		}),
+		user: one(user, {
+			fields: [shelterManagers.userId],
+			references: [user.id],
+		}),
+	}),
+)
+
 export const sheltersRelations = relations(shelters, ({ many }) => ({
 	animals: many(animals),
+	managers: many(shelterManagers), // usuários responsáveis pelo abrigo
 }))
 
 export const animalsRelations = relations(animals, ({ one, many }) => ({

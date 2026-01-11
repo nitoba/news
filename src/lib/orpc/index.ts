@@ -7,7 +7,9 @@ import {
 	bothPermissions,
 	donorPermissions,
 	setup,
+	shelterManagerPermissions,
 } from '@/lib/permix'
+import { getUserManagedShelterIds } from '@/lib/services/shelter-manager-service'
 import { timingStore } from '@/lib/timing-store'
 import { auth } from '../auth/server'
 import type { Context } from './context'
@@ -124,7 +126,7 @@ export const authMiddleware = os
 
 const permissionsMiddleware = os
 	.$context<Context>()
-	.middleware(({ context, next }) => {
+	.middleware(async ({ context, next }) => {
 		if (!context.user) {
 			return next()
 		}
@@ -132,20 +134,29 @@ const permissionsMiddleware = os
 		const userType = context.user.userType || 'adopter'
 		const userId = context.user.id
 
+		// Verifica se o usuário gerencia algum abrigo
+		const shelterIds = await getUserManagedShelterIds(userId)
+
 		let p: ReturnType<typeof setup>
 
-		switch (userType) {
-			case 'adopter':
-				p = setup(adopterPermissions(userId))
-				break
-			case 'donor':
-				p = setup(donorPermissions(userId))
-				break
-			case 'both':
-				p = setup(bothPermissions(userId))
-				break
-			default:
-				p = setup(adopterPermissions(userId))
+		// Se o usuário gerencia abrigos, usa permissões de shelter manager
+		if (shelterIds.length > 0) {
+			p = setup(shelterManagerPermissions({ userId, shelterIds }))
+		} else {
+			// Caso contrário, usa permissões baseadas no userType
+			switch (userType) {
+				case 'adopter':
+					p = setup(adopterPermissions(userId))
+					break
+				case 'donor':
+					p = setup(donorPermissions(userId))
+					break
+				case 'both':
+					p = setup(bothPermissions(userId))
+					break
+				default:
+					p = setup(adopterPermissions(userId))
+			}
 		}
 
 		return next({
