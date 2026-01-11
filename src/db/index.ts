@@ -1,7 +1,7 @@
 import { drizzle } from 'drizzle-orm/node-postgres'
 import { env } from '@/env.ts'
 import { timingStore } from '@/lib/timing-store'
-import * as schema from './schema.ts'
+import * as schema from './schemas/index.ts'
 
 function createDrizzle() {
 	const client = drizzle(env.DATABASE_URL, { schema })

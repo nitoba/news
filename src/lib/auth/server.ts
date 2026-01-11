@@ -3,7 +3,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { openAPI } from 'better-auth/plugins'
 import { tanstackStartCookies } from 'better-auth/tanstack-start'
 import { db } from '@/db'
-import * as schema from '@/db/schema'
+import * as schema from '@/db/schemas'
 import { env } from '@/env'
 
 export type Auth = typeof auth
