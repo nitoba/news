@@ -43,6 +43,7 @@
         "lucide-react": "^0.561.0",
         "next-themes": "^0.4.6",
         "nitro": "latest",
+        "permix": "^3.6.0",
         "pg": "^8.16.3",
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
@@ -1008,6 +1009,8 @@
     "pathe": ["pathe@2.0.3", "", {}, "sha512-WUjGcAqP1gQacoQe+OBJsFA7Ld4DyXuUIjZ5cc75cLHvJ7dtNsTugphxIADwspS+AraAUePCKrSVtPLFj/F88w=="],
 
     "pathval": ["pathval@2.0.1", "", {}, "sha512-//nshmD55c46FuFw26xV/xFAaB5HF9Xdap7HJBBnrKdAd6/GxDBaNA1870O79+9ueg61cZLSVc+OaFlfmObYVQ=="],
+
+    "permix": ["permix@3.6.0", "", { "peerDependencies": { "@orpc/server": ">=1", "@trpc/server": ">=11", "elysia": ">=1", "express": ">=4", "fastify": ">=5", "fastify-plugin": ">=5", "hono": ">=4", "react": ">=18", "react-dom": ">=18", "solid-js": ">=1", "vue": ">=3" }, "optionalPeers": ["@orpc/server", "@trpc/server", "elysia", "express", "fastify", "fastify-plugin", "hono", "react", "react-dom", "solid-js", "vue"] }, "sha512-eMqfYCKDlWuGyuAs9ihjDj0SGYDWYoxZ/n2ouCVWlzY9VaMa4eL/c+80o5qEeZO0zpxrA/5YUOGEwsrP9yJG/w=="],
 
     "pg": ["pg@8.16.3", "", { "dependencies": { "pg-connection-string": "2.9.1", "pg-pool": "3.10.1", "pg-protocol": "1.10.3", "pg-types": "2.2.0", "pgpass": "1.0.5" }, "optionalDependencies": { "pg-cloudflare": "1.2.7" } }, "sha512-enxc1h0jA/aq5oSDMvqyW3q89ra6XIIDZgCX9vkMrnz5DFTw/Ny3Li2lFQ+pt3L6MCgm/5o2o8HW9hiJji+xvw=="],
 

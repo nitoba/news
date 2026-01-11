@@ -1,11 +1,13 @@
+import { ORPCError } from '@orpc/server'
 import {
 	InsertSheltersSchema,
 	SelectSheltersSchema,
 	UpdateSheltersSchema,
 } from 'src/lib/validators'
 import { z } from 'zod'
+import { checkPermissionMiddleware } from '@/lib/permix'
 import { ShelterService } from '@/lib/services/shelter-service'
-import { protectedProcedure, publicProcedure } from '../..'
+import { protectedWithPermissionsProcedure, publicProcedure } from '../..'
 
 const listShelters = publicProcedure()
 	.output(z.array(SelectSheltersSchema))
@@ -20,24 +22,43 @@ const getShelters = publicProcedure()
 		return await ShelterService.getById(input.id)
 	})
 
-const createShelters = protectedProcedure()
+const createShelters = protectedWithPermissionsProcedure()
+	.use(checkPermissionMiddleware('shelters', 'create'))
 	.input(InsertSheltersSchema)
 	.output(SelectSheltersSchema)
 	.handler(async ({ input }) => {
 		return await ShelterService.create(input)
 	})
 
-const updateShelters = protectedProcedure()
+const updateShelters = protectedWithPermissionsProcedure()
 	.input(z.object({ id: z.uuid(), data: UpdateSheltersSchema }))
 	.output(SelectSheltersSchema)
-	.handler(async ({ input }) => {
+	.handler(async ({ input, context }) => {
+		const shelter = await ShelterService.getById(input.id)
+
+		if (!shelter) {
+			throw new ORPCError('NOT_FOUND')
+		}
+
+		if (!context.permix?.check('shelters', 'update', shelter)) {
+			throw new ORPCError('FORBIDDEN')
+		}
 		return await ShelterService.update(input.id, input.data)
 	})
 
-const deleteShelters = protectedProcedure()
+const deleteShelters = protectedWithPermissionsProcedure()
 	.input(z.object({ id: z.uuid() }))
 	.output(z.boolean())
-	.handler(async ({ input }) => {
+	.handler(async ({ input, context }) => {
+		const shelter = await ShelterService.getById(input.id)
+
+		if (!shelter) {
+			throw new ORPCError('NOT_FOUND')
+		}
+
+		if (!context.permix?.check('shelters', 'delete', shelter)) {
+			throw new ORPCError('FORBIDDEN')
+		}
 		return await ShelterService.delete(input.id)
 	})
 

@@ -2,6 +2,12 @@ import { randomUUID } from 'node:crypto'
 import { ORPCError, os } from '@orpc/server'
 import { getRequestHeaders } from '@tanstack/react-start/server'
 import { logger } from '@/lib/logger'
+import {
+	adopterPermissions,
+	bothPermissions,
+	donorPermissions,
+	setup,
+} from '@/lib/permix'
 import { timingStore } from '@/lib/timing-store'
 import { auth } from '../auth/server'
 import type { Context } from './context'
@@ -116,5 +122,41 @@ export const authMiddleware = os
 		})
 	})
 
+const permissionsMiddleware = os
+	.$context<Context>()
+	.middleware(({ context, next }) => {
+		if (!context.user) {
+			return next()
+		}
+
+		const userType = context.user.userType || 'adopter'
+		const userId = context.user.id
+
+		let p: ReturnType<typeof setup>
+
+		switch (userType) {
+			case 'adopter':
+				p = setup(adopterPermissions(userId))
+				break
+			case 'donor':
+				p = setup(donorPermissions(userId))
+				break
+			case 'both':
+				p = setup(bothPermissions(userId))
+				break
+			default:
+				p = setup(adopterPermissions(userId))
+		}
+
+		return next({
+			context: {
+				...context,
+				permix: p,
+			},
+		})
+	})
+
 export const publicProcedure = () => base
 export const protectedProcedure = () => base.use(authMiddleware)
+export const protectedWithPermissionsProcedure = () =>
+	base.use(authMiddleware).use(permissionsMiddleware)
