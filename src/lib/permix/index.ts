@@ -1,3 +1,4 @@
+import type { PermixDefinition } from 'permix'
 import { createPermix } from 'permix/orpc'
 
 export type UserRole = 'adopter' | 'donor' | 'both'
@@ -25,7 +26,7 @@ interface ShelterManagerData {
 
 type CRUD = 'create' | 'read' | 'update' | 'delete'
 
-export type PermissionDefinition = {
+export type PermissionDefinition = PermixDefinition<{
 	animals: {
 		dataType: AnimalData
 		action: CRUD
@@ -38,15 +39,14 @@ export type PermissionDefinition = {
 		dataType: ShelterData
 		action: CRUD
 	}
-}
+}>
 
-export const {
-	setup,
-	checkMiddleware: checkPermissionMiddleware,
-	template,
-} = createPermix<PermissionDefinition>()
+export const permix = createPermix<PermissionDefinition>()
 
-export const adminPermissions = template(() => ({
+export const checkPermissionMiddleware = permix.checkMiddleware
+export const setup = permix.setup
+
+export const adminPermissions = permix.template(() => ({
 	animals: {
 		create: true,
 		read: true,
@@ -67,7 +67,7 @@ export const adminPermissions = template(() => ({
 	},
 }))
 
-export const adopterPermissions = template((userId: string) => ({
+export const adopterPermissions = permix.template((userId: string) => ({
 	animals: {
 		create: false,
 		read: true,
@@ -91,7 +91,7 @@ export const adopterPermissions = template((userId: string) => ({
 	},
 }))
 
-export const donorPermissions = template((userId: string) => ({
+export const donorPermissions = permix.template((userId: string) => ({
 	animals: {
 		create: true,
 		read: true,
@@ -116,7 +116,7 @@ export const donorPermissions = template((userId: string) => ({
 	},
 }))
 
-export const bothPermissions = template((userId: string) => ({
+export const bothPermissions = permix.template((userId: string) => ({
 	animals: {
 		create: true,
 		read: true,
@@ -140,7 +140,7 @@ export const bothPermissions = template((userId: string) => ({
 	},
 }))
 
-export const shelterManagerPermissions = template(
+export const shelterManagerPermissions = permix.template(
 	(params: ShelterManagerData) => ({
 		animals: {
 			create: true,
