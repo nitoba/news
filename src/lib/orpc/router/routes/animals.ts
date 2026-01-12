@@ -1,6 +1,7 @@
 import { ORPCError } from '@orpc/server'
 import {
 	InsertAnimalsSchema,
+	ListAnimalsSchema,
 	SelectAnimalsSchema,
 	UpdateAnimalsSchema,
 } from 'src/lib/validators'
@@ -12,9 +13,10 @@ import { AnimalService } from '@/lib/services/animal-service'
 import { protectedWithPermissionsProcedure, publicProcedure } from '../..'
 
 const listAnimals = publicProcedure()
+	.input(ListAnimalsSchema)
 	.output(z.array(SelectAnimalsSchema))
-	.handler(async () => {
-		return await AnimalService.getAll()
+	.handler(async ({ input }) => {
+		return await AnimalService.getAll(input)
 	})
 
 const getAnimals = publicProcedure()

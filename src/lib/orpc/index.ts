@@ -9,7 +9,7 @@ import {
 	setup,
 	shelterManagerPermissions,
 } from '@/lib/permix'
-import { getUserManagedShelterIds } from '@/lib/services/shelter-manager-service'
+import { shelterManagerService } from '@/lib/services/shelter-manager-service'
 import { timingStore } from '@/lib/timing-store'
 import { auth } from '../auth/server'
 import type { Context } from './context'
@@ -135,7 +135,8 @@ const permissionsMiddleware = os
 		const userId = context.user.id
 
 		// Verifica se o usuário gerencia algum abrigo
-		const shelterIds = await getUserManagedShelterIds(userId)
+		const shelterIds =
+			await shelterManagerService.getUserManagedShelterIds(userId)
 
 		let p: ReturnType<typeof setup>
 

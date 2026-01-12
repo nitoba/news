@@ -1,6 +1,7 @@
 import { ORPCError } from '@orpc/server'
 import {
 	InsertAdoptionRequestsSchema,
+	ListAdoptionRequestsSchema,
 	SelectAdoptionRequestsSchema,
 	UpdateAdoptionRequestsSchema,
 } from 'src/lib/validators'
@@ -12,9 +13,10 @@ import { AdoptionRequestService } from '@/lib/services/adoption-request-service'
 import { protectedProcedure, protectedWithPermissionsProcedure } from '../..'
 
 const listAdoptionRequests = protectedProcedure()
+	.input(ListAdoptionRequestsSchema)
 	.output(z.array(SelectAdoptionRequestsSchema))
-	.handler(async () => {
-		return await AdoptionRequestService.getAll()
+	.handler(async ({ input }) => {
+		return await AdoptionRequestService.getAll(input)
 	})
 
 const getAdoptionRequests = protectedProcedure()

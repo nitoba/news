@@ -1,6 +1,7 @@
 import { ORPCError } from '@orpc/server'
 import {
 	InsertSheltersSchema,
+	ListSheltersSchema,
 	SelectSheltersSchema,
 	UpdateSheltersSchema,
 } from 'src/lib/validators'
@@ -10,9 +11,10 @@ import { ShelterService } from '@/lib/services/shelter-service'
 import { protectedWithPermissionsProcedure, publicProcedure } from '../..'
 
 const listShelters = publicProcedure()
+	.input(ListSheltersSchema)
 	.output(z.array(SelectSheltersSchema))
-	.handler(async () => {
-		return await ShelterService.getAll()
+	.handler(async ({ input }) => {
+		return await ShelterService.getAll(input)
 	})
 
 const getShelters = publicProcedure()
