@@ -11,3 +11,6 @@ count.txt
 .output
 .vinxi
 todos.json
+
+# opensrc - source code for packages
+opensrc/

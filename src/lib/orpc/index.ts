@@ -135,8 +135,18 @@ const permissionsMiddleware = os
 		const userId = context.user.id
 
 		// Verifica se o usuário gerencia algum abrigo
-		const shelterIds =
+		const shelterIdsResult =
 			await shelterManagerService.getUserManagedShelterIds(userId)
+
+		let shelterIds: string[] = []
+		shelterIdsResult.match({
+			ok: (ids) => {
+				shelterIds = ids
+			},
+			err: (error) => {
+				throw error
+			},
+		})
 
 		let p: ReturnType<typeof setup>
 

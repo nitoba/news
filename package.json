@@ -47,6 +47,7 @@
     "@tanstack/router-plugin": "^1.132.0",
     "async_hooks": "^1.0.0",
     "better-auth": "^1.4.10",
+    "better-result": "^2.5.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "colorette": "^2.0.20",
