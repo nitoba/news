@@ -7,8 +7,13 @@ export default defineConfig({
 	test: {
 		globals: true,
 		environment: 'jsdom',
-		setupFiles: [],
+		setupFiles: ['./src/test-setup.ts'],
 		include: ['**/*.{test,spec}.{js,ts,tsx}'],
-		exclude: ['node_modules', 'dist'],
+		exclude: ['node_modules', 'dist', '.opencode', 'opensrc'],
+		poolOptions: {
+			threads: {
+				singleThread: true,
+			},
+		},
 	},
 })
