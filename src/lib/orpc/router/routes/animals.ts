@@ -1,6 +1,7 @@
 import { ORPCError } from '@orpc/server'
 import {
 	InsertAnimalsSchema,
+	ListAnimalPublicSchema,
 	ListAnimalsSchema,
 	SelectAnimalsSchema,
 	UpdateAnimalsSchema,
@@ -34,6 +35,22 @@ const getAnimals = publicProcedure()
 
 		return result.match({
 			ok: (animal) => animal,
+			err: (error) => {
+				throw new ORPCError('INTERNAL_SERVER_ERROR', {
+					message: error.message,
+				})
+			},
+		})
+	})
+
+const getPublicAnimals = publicProcedure()
+	.input(ListAnimalPublicSchema)
+	.output(z.array(SelectAnimalsSchema))
+	.handler(async ({ input }) => {
+		const result = await AnimalService.getAll({ ...input, isAdopted: false })
+
+		return result.match({
+			ok: (animals) => animals,
 			err: (error) => {
 				throw new ORPCError('INTERNAL_SERVER_ERROR', {
 					message: error.message,
@@ -132,6 +149,7 @@ const deleteAnimals = protectedWithPermissionsProcedure()
 export const animals = {
 	list: listAnimals,
 	get: getAnimals,
+	getPublic: getPublicAnimals,
 	create: createAnimals,
 	update: updateAnimals,
 	delete: deleteAnimals,
