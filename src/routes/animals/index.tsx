@@ -3,14 +3,6 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Navbar } from '@/components/navbar'
 import { Button } from '@/components/ui/button'
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import {
 	Select,
@@ -20,6 +12,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
+import { AnimalCard } from '@/components/animals/animal-card'
 import { orpc } from '@/lib/orpc/client'
 
 type AnimalType = 'dog' | 'cat' | 'other'
@@ -239,18 +232,21 @@ function AnimalsPage() {
 					<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 						{Array.from({ length: 8 }).map((_, index) => (
 							// biome-ignore lint/suspicious/noArrayIndexKey: loading skeleton
-							<Card key={index} className="overflow-hidden">
+							<div
+								key={index}
+								className="bg-card text-card-foreground overflow-hidden rounded-xl border shadow-sm"
+							>
 								<Skeleton className="aspect-square w-full" />
-								<CardHeader>
+								<div className="flex flex-col space-y-1.5 p-6">
 									<Skeleton className="h-6 w-3/4" />
 									<Skeleton className="h-4 w-1/2" />
-								</CardHeader>
-								<CardContent>
+								</div>
+								<div className="p-6 pt-0">
 									<Skeleton className="mb-2 h-4 w-full" />
 									<Skeleton className="mb-2 h-4 w-full" />
 									<Skeleton className="h-4 w-2/3" />
-								</CardContent>
-							</Card>
+								</div>
+							</div>
 						))}
 					</div>
 				) : animalsQuery.isError ? (
@@ -267,60 +263,18 @@ function AnimalsPage() {
 					<>
 						<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 							{animalsQuery.data.map((animal) => (
-								<Card
+								<AnimalCard
 									key={animal.id}
-									className="flex flex-col overflow-hidden transition-shadow hover:shadow-md"
-								>
-									{animal.imageUrl ? (
-										<img
-											src={animal.imageUrl}
-											alt={animal.name}
-											className="aspect-square w-full object-cover"
-											loading="lazy"
-										/>
-									) : (
-										<div className="flex aspect-square w-full items-center justify-center bg-muted">
-											<span
-												className="text-4xl"
-												role="img"
-												aria-label="No image"
-											>
-												🐾
-											</span>
-										</div>
-									)}
-									<CardHeader>
-										<CardTitle>{animal.name}</CardTitle>
-										<CardDescription>
-											{animal.breed
-												? `${animal.breed} · ${animal.type}`
-												: animal.type}
-										</CardDescription>
-									</CardHeader>
-									<CardContent className="flex-1">
-										<div className="flex flex-wrap gap-2">
-											<span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
-												{animal.size}
-											</span>
-											<span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
-												{animal.gender}
-											</span>
-											{animal.age && (
-												<span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
-													{animal.age} months
-												</span>
-											)}
-										</div>
-										{animal.description && (
-											<p className="mt-3 line-clamp-3 text-sm text-muted-foreground">
-												{animal.description}
-											</p>
-										)}
-									</CardContent>
-									<CardFooter>
-										<Button className="w-full">View Details</Button>
-									</CardFooter>
-								</Card>
+									id={animal.id}
+									name={animal.name}
+									type={animal.type}
+									size={animal.size}
+									gender={animal.gender}
+									breed={animal.breed}
+									age={animal.age}
+									imageUrl={animal.imageUrl}
+									description={animal.description}
+								/>
 							))}
 						</div>
 
