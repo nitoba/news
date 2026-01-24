@@ -86,3 +86,21 @@ export const ListAnimalsSchema = z.object({
 export type InsertAnimalsInput = z.input<typeof InsertAnimalsSchema>
 export type UpdateAnimalsInput = z.input<typeof UpdateAnimalsSchema>
 export type SelectAnimalsOutput = z.output<typeof SelectAnimalsSchema>
+
+// Public-facing filter schema for animal listing
+// Excludes admin-only fields (isAdopted, shelterId, userId, orderBy)
+export const PublicAnimalFiltersSchema = z.object({
+	type: z.enum(['dog', 'cat', 'other'] as const).optional(),
+	size: z.enum(['small', 'medium', 'big'] as const).optional(),
+	gender: z.enum(['male', 'female'] as const).optional(),
+})
+
+// Public list schema that combines pagination with public filters
+export const ListAnimalPublicSchema = z.object({
+	...paginationSchema.shape,
+	...PublicAnimalFiltersSchema.shape,
+})
+
+// TypeScript type exports for public schemas
+export type PublicAnimalFiltersInput = z.input<typeof PublicAnimalFiltersSchema>
+export type ListAnimalPublicInput = z.input<typeof ListAnimalPublicSchema>
