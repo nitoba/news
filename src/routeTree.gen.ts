@@ -11,7 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as AnimalsIndexRouteImport } from './routes/animals/index'
 import { Route as ApiSplatRouteImport } from './routes/api.$'
+import { Route as AnimalsAnimalIdRouteImport } from './routes/animals.$animalId'
 import { Route as AuthSignUpIndexRouteImport } from './routes/_auth/sign-up/index'
 import { Route as AuthSignInIndexRouteImport } from './routes/_auth/sign-in/index'
 import { Route as ApiRpcSplatRouteImport } from './routes/api.rpc.$'
@@ -26,9 +28,19 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   path: '/dashboard/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AnimalsIndexRoute = AnimalsIndexRouteImport.update({
+  id: '/animals/',
+  path: '/animals/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiSplatRoute = ApiSplatRouteImport.update({
   id: '/api/$',
   path: '/api/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnimalsAnimalIdRoute = AnimalsAnimalIdRouteImport.update({
+  id: '/animals/$animalId',
+  path: '/animals/$animalId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthSignUpIndexRoute = AuthSignUpIndexRouteImport.update({
@@ -49,7 +61,9 @@ const ApiRpcSplatRoute = ApiRpcSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/animals/$animalId': typeof AnimalsAnimalIdRoute
   '/api/$': typeof ApiSplatRoute
+  '/animals': typeof AnimalsIndexRoute
   '/dashboard': typeof DashboardIndexRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
   '/sign-in': typeof AuthSignInIndexRoute
@@ -57,7 +71,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/animals/$animalId': typeof AnimalsAnimalIdRoute
   '/api/$': typeof ApiSplatRoute
+  '/animals': typeof AnimalsIndexRoute
   '/dashboard': typeof DashboardIndexRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
   '/sign-in': typeof AuthSignInIndexRoute
@@ -66,7 +82,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/animals/$animalId': typeof AnimalsAnimalIdRoute
   '/api/$': typeof ApiSplatRoute
+  '/animals/': typeof AnimalsIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
   '/_auth/sign-in/': typeof AuthSignInIndexRoute
@@ -76,17 +94,29 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/animals/$animalId'
     | '/api/$'
+    | '/animals'
     | '/dashboard'
     | '/api/rpc/$'
     | '/sign-in'
     | '/sign-up'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/$' | '/dashboard' | '/api/rpc/$' | '/sign-in' | '/sign-up'
+  to:
+    | '/'
+    | '/animals/$animalId'
+    | '/api/$'
+    | '/animals'
+    | '/dashboard'
+    | '/api/rpc/$'
+    | '/sign-in'
+    | '/sign-up'
   id:
     | '__root__'
     | '/'
+    | '/animals/$animalId'
     | '/api/$'
+    | '/animals/'
     | '/dashboard/'
     | '/api/rpc/$'
     | '/_auth/sign-in/'
@@ -95,7 +125,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnimalsAnimalIdRoute: typeof AnimalsAnimalIdRoute
   ApiSplatRoute: typeof ApiSplatRoute
+  AnimalsIndexRoute: typeof AnimalsIndexRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   ApiRpcSplatRoute: typeof ApiRpcSplatRoute
   AuthSignInIndexRoute: typeof AuthSignInIndexRoute
@@ -118,11 +150,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/animals/': {
+      id: '/animals/'
+      path: '/animals'
+      fullPath: '/animals'
+      preLoaderRoute: typeof AnimalsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/$': {
       id: '/api/$'
       path: '/api/$'
       fullPath: '/api/$'
       preLoaderRoute: typeof ApiSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/animals/$animalId': {
+      id: '/animals/$animalId'
+      path: '/animals/$animalId'
+      fullPath: '/animals/$animalId'
+      preLoaderRoute: typeof AnimalsAnimalIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth/sign-up/': {
@@ -151,7 +197,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnimalsAnimalIdRoute: AnimalsAnimalIdRoute,
   ApiSplatRoute: ApiSplatRoute,
+  AnimalsIndexRoute: AnimalsIndexRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   ApiRpcSplatRoute: ApiRpcSplatRoute,
   AuthSignInIndexRoute: AuthSignInIndexRoute,

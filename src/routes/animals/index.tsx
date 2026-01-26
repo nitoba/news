@@ -274,6 +274,7 @@ function AnimalsPage() {
 									age={animal.age}
 									imageUrl={animal.imageUrl}
 									description={animal.description}
+									to={`/animals/${animal.id}`}
 								/>
 							))}
 						</div>

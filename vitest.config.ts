@@ -15,5 +15,10 @@ export default defineConfig({
 				singleThread: true,
 			},
 		},
+		// Set NODE_ENV=test for React 19 compatibility
+		// React 19's act is only available in development builds
+		env: {
+			NODE_ENV: 'test',
+		},
 	},
 })
